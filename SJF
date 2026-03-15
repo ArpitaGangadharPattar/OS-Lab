@@ -1,0 +1,80 @@
+#include<stdio.h>
+
+int main()
+{
+    int i,n,AT[50],BT[50],CT[50],PID[50],TAT[50],WT[50],status[50];
+    int current_time=0,completed=0;
+    float sumTAT=0,sumWT=0,AvgTAT,AvgWT;
+
+    printf("Enter the number of process:\n");
+    scanf("%d",&n);
+
+    for(i=1;i<=n;i++)
+    {
+        printf("Enter the Arrival time of process %d:",i);
+        scanf("%d",&AT[i]);
+
+        printf("Enter the Burst time of process %d:",i);
+        scanf("%d",&BT[i]);
+
+        PID[i]=i;
+        status[i]=0;
+    }
+
+    while(completed < n)
+    {
+        int pmin=-1;
+        int minBT=9999;
+
+        for(i=1;i<=n;i++)
+        {
+            if(AT[i] <= current_time && status[i]==0)
+            {
+                if(BT[i] < minBT)
+                {
+                    minBT = BT[i];
+                    pmin = i;
+                }
+            }
+        }
+
+        if(pmin == -1)
+        {
+            current_time++;
+        }
+        else
+        {
+            CT[pmin] = current_time + BT[pmin];
+            TAT[pmin] = CT[pmin] - AT[pmin];
+            WT[pmin] = TAT[pmin] - BT[pmin];
+
+            status[pmin] = 1;
+            current_time = CT[pmin];
+            completed++;
+        }
+    }
+
+    for(i=1;i<=n;i++)
+    {
+        sumTAT += TAT[i];
+        sumWT += WT[i];
+    }
+
+    AvgTAT = sumTAT / n;
+    AvgWT = sumWT / n;
+
+    for(i=1;i<=n;i++)
+    {
+        printf("\nProcess ID:%d\n",PID[i]);
+        printf("Arrival Time:%d\n",AT[i]);
+        printf("Burst Time:%d\n",BT[i]);
+        printf("Completion Time:%d\n",CT[i]);
+        printf("Waiting Time:%d\n",WT[i]);
+        printf("Turnaround Time:%d\n",TAT[i]);
+    }
+
+    printf("\nAverage Turnaround time:%f\n",AvgTAT);
+    printf("Average Waiting time:%f\n",AvgWT);
+
+    return 0;
+}
